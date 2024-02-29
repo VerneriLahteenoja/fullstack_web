@@ -42,10 +42,21 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 app.post('/api/persons', (req, res) => {
-    const person = req.body
-    person.id = Math.floor(Math.random() * (200-persons.length)+persons.length)
-    console.log(person)
-    res.json(person)
+    const body = req.body
+    if (!body.name || !body.number) {
+        return res.status(422).json({ error: 'name or number missing' })  
+    }
+    if (persons.find(person => person.name.toLowerCase() === body.name.toLowerCase())) {
+        return res.status(409).json({ error: 'Person with this name already exists'})
+    }
+    const person = {
+        id: Math.floor(Math.random() * (200-persons.length)+persons.length),
+        name: body.name,
+        number: body.number
+    }
+    persons = persons.concat(person)
+    console.log(persons)
+    res.status(201).json(person)
 })
 
 
