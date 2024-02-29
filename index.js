@@ -4,9 +4,19 @@ const app = express()
 var morgan = require('morgan')
 
 app.use(express.json())
-app.use(morgan('tiny'))
 
-const PORT = 3001
+morgan.token('body', function (req, res) {return req.method==='POST' ? JSON.stringify(req.body) : ''})
+app.use(morgan(function (tokens, req, res) {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, 'content-length'), '-',
+      tokens['response-time'](req, res), 'ms',
+      tokens.body(req, res)
+    ].join(' ')
+  })
+)
 
 
 app.get('/api/persons', (req, res) => {
@@ -57,12 +67,13 @@ app.post('/api/persons', (req, res) => {
         number: body.number
     }
     persons = persons.concat(person)
-    console.log(persons)
     res.status(201).json(person)
 })
 
 
 // RUN
+const PORT = 3001
+
 app.listen(PORT, () => {
     console.log(`Running on port ${PORT}`)
 })
