@@ -1,8 +1,10 @@
 let persons = require('./persons.json')
 const express = require('express')
 const app = express()
+var morgan = require('morgan')
 
 app.use(express.json())
+app.use(morgan('tiny'))
 
 const PORT = 3001
 
