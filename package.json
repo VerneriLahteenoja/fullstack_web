@@ -1,0 +1,27 @@
+{
+  "name": "fullstack_web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VerneriLahteenoja/fullstack_web.git"
+  },
+  "author": "Verneri Lahteenoja",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VerneriLahteenoja/fullstack_web/issues"
+  },
+  "homepage": "https://github.com/VerneriLahteenoja/fullstack_web#readme",
+  "dependencies": {
+    "express": "^4.18.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
