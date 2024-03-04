@@ -19,6 +19,7 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model('Person', noteSchema)
 
+// Add a new person to Person
 const person = new Person({
   name: 'Mongo Mango',
   number: '123-1234123',
@@ -28,3 +29,11 @@ person.save().then(result => {
   console.log('person saved!')
   mongoose.connection.close()
 })
+
+// Get all objects in Person
+Person.find(({}).then(result => {
+    result.forEach(person => {
+        console.log(person)
+    })
+    mongoose.connection.close()
+}))
