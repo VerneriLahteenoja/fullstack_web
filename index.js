@@ -1,5 +1,5 @@
 let persons = require('./persons.json')
-const Person = require('./models/person')
+const Phonebook = require('./models/person')
 const express = require('express')
 const app = express()
 var morgan = require('morgan')
@@ -23,13 +23,13 @@ app.use(morgan(function (tokens, req, res) {
 )
 
 app.get('/api/persons', (req, res) => {
-    Person.find({}).then(people => {
+    Phonebook.People.find({}).then(people => {
         res.json(people)
     })
 })
 
 app.get('/info', (req, res) => {
-    Person.find({}).then(people => {
+    Phonebook.People.find({}).then(people => {
         const date = Date()
         res.send
         (`<div>Phonebook has info for ${people.length} people</div>
@@ -40,7 +40,7 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    Person.findById(req.params.id)
+    Phonebook.People.findById(req.params.id)
         .then(person => {
             if (person) {
                 res.json(person)
@@ -66,16 +66,8 @@ app.post('/api/persons', (req, res) => {
     if (!body.name || !body.number) {
         return res.status(422).json({ error: 'name or number missing' })  
     }
-    if (persons.find(person => person.name.toLowerCase() === body.name.toLowerCase())) {
-        return res.status(409).json({ error: 'Person with this name already exists'})
-    }
-    const person = {
-        id: Math.floor(Math.random() * (200-persons.length)+persons.length),
-        name: body.name,
-        number: body.number
-    }
-    persons = persons.concat(person)
-    res.status(201).json(person)
+    Phonebook.addNewPerson({name: body.name, number: body.number})
+    res.status(201)
 })
 
 
