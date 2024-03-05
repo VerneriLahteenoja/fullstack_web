@@ -28,7 +28,12 @@ personSchema.set('toJSON', {
   }
 })
 
-const Person = mongoose.model('Person', personSchema)
+const People = mongoose.model('Person', personSchema)
+
+const addNewPerson = (doc) => {
+  const newPerson = new People(doc)
+  newPerson.save().then(result => console.log(`added ${result}`))
+}
 
 //   const person = new Person({
 //     name: `${name}`,
@@ -50,7 +55,7 @@ const Person = mongoose.model('Person', personSchema)
 //   })
 // }
 
-module.exports = Person
+module.exports = {People, addNewPerson}
 
 
 
