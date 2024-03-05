@@ -7,33 +7,43 @@ if (process.argv.length<3) {
 
 const password = process.argv[2]
 
-const url = ``
-
-mongoose.set('strictQuery', false)
-mongoose.connect(url)
+const url = `mongodb+srv://fullstack_web:${password}@cluster0.grkp9mc.mongodb.net/phonebookApp?retryWrites=true&w=majority&appName=Cluster0`
+try {
+  mongoose.set('strictQuery', false)
+  mongoose.connect(url)
+} catch (error) {
+  console.error(error)
+}
+  
 
 const personSchema = new mongoose.Schema({
   name: String,
   number: String,
 })
 
-const Person = mongoose.model('Person', noteSchema)
+const Person = mongoose.model('Person', personSchema)
 
-// Add a new person to Person
-const person = new Person({
-  name: 'Mongo Mango',
-  number: '123-1234123',
-})
+if (process.argv.length>3) {
+  // Add a new person to Person
+  const name = process.argv[3]
+  const number = process.argv[4]
 
-person.save().then(result => {
-  console.log('person saved!')
-  mongoose.connection.close()
-})
+  const person = new Person({
+    name: `${name}`,
+    number: `${number}`,
+  })
 
-// Get all objects in Person
-Person.find(({}).then(result => {
+  person.save().then(result => {
+    console.log(`added ${name} ${number} to phonebook`)
+    mongoose.connection.close()
+  })
+
+} else {
+  // Get all objects in Person
+  Person.find({}).then(result => {
     result.forEach(person => {
-        console.log(person)
+      console.log(person)
     })
     mongoose.connection.close()
-}))
+  })
+}
