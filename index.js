@@ -1,4 +1,5 @@
 let persons = require('./persons.json')
+const Person = require('./models/person')
 const express = require('express')
 const app = express()
 var morgan = require('morgan')
@@ -21,28 +22,32 @@ app.use(morgan(function (tokens, req, res) {
   })
 )
 
-
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person.find({}).then(people => {
+        res.json(people)
+    })
 })
 
 app.get('/info', (req, res) => {
-    const date = Date()
-    res.send
-    (`<div>Phonebook has info for ${persons.length} people</div>
-        </br>
-        <div>${date}</div>
-    `)
+    Person.find({}).then(people => {
+        const date = Date()
+        res.send
+        (`<div>Phonebook has info for ${people.length} people</div>
+            </br>
+            <div>${date}</div>
+        `)
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }
+    Person.findById(req.params.id)
+        .then(person => {
+            if (person) {
+                res.json(person)
+            } else {
+                res.status(404).end()
+            }
+        })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
