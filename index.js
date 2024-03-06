@@ -39,7 +39,7 @@ app.get('/info', (req, res) => {
     })
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     Phonebook.People.findById(req.params.id)
         .then(person => {
             if (person) {
@@ -51,15 +51,24 @@ app.get('/api/persons/:id', (req, res) => {
         .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
-    if (person) {
-        persons = persons.filter(person => person.id !== id)
+app.delete('/api/persons/:id', (req, res, next) => {
+    Phonebook.People.findByIdAndDelete(req.params.id)
+    .then(result => {
         res.status(204).end()
-    } else {
-        res.status(404).end()
+    })
+    .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+    const person = {
+        name: body.name,
+        number: body.number
     }
+    Phonebook.People.findByIdAndUpdate(req.params.id, person, { new: true })
+    .then(updatedPerson => {res.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (req, res) => {
@@ -81,7 +90,7 @@ const errorHandler = (error, req, res, next) => {
 app.use(errorHandler)
 
 // RUN
-const PORT = process.env.PORT || 3002
+const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
     console.log(`Running on port ${PORT}`)
