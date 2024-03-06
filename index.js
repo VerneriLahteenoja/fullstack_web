@@ -22,13 +22,14 @@ app.use(morgan(function (tokens, req, res) {
   })
 )
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
     Phonebook.People.find({}).then(people => {
         res.json(people)
     })
+    .catch(error => next(error))
 })
 
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
     Phonebook.People.find({}).then(people => {
         const date = Date()
         res.send
@@ -37,6 +38,7 @@ app.get('/info', (req, res) => {
             <div>${date}</div>
         `)
     })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
@@ -71,13 +73,17 @@ app.put('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const body = req.body
     if (!body.name || !body.number) {
         return res.status(422).json({ error: 'name or number missing' })  
     }
     Phonebook.addNewPerson({name: body.name, number: body.number})
-    res.status(201)
+    .then(result => {
+        res.status(201)
+    })
+    .catch(error => next(error))
+    
 })
 
 const errorHandler = (error, req, res, next) => {
