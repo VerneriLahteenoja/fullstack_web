@@ -48,6 +48,7 @@ app.get('/api/persons/:id', (req, res) => {
                 res.status(404).end()
             }
         })
+        .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -70,6 +71,14 @@ app.post('/api/persons', (req, res) => {
     res.status(201)
 })
 
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message)
+    if (error.name === 'CastError') {
+        return res.status(400).send({ error: 'malformatted id' })
+    }
+    next(error)
+}
+app.use(errorHandler)
 
 // RUN
 const PORT = process.env.PORT || 3002
