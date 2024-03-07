@@ -1,4 +1,3 @@
-let persons = require('./persons.json')
 const Phonebook = require('./models/person')
 const express = require('express')
 const app = express()
@@ -67,7 +66,7 @@ app.put('/api/persons/:id', (req, res, next) => {
         name: body.name,
         number: body.number
     }
-    Phonebook.People.findByIdAndUpdate(req.params.id, person, { new: true })
+    Phonebook.People.findByIdAndUpdate(req.params.id, person, { new: true, runValidators: true })
     .then(updatedPerson => {res.json(updatedPerson)
     })
     .catch(error => next(error))
@@ -78,18 +77,23 @@ app.post('/api/persons', (req, res, next) => {
     if (!body.name || !body.number) {
         return res.status(422).json({ error: 'name or number missing' })  
     }
-    Phonebook.addNewPerson({name: body.name, number: body.number})
+    const person = new Phonebook.People({
+        name: body.name,
+        number: body.number
+    })
+    person.save()
     .then(result => {
-        res.status(201)
+        res.status(201).end()
     })
     .catch(error => next(error))
-    
 })
 
 const errorHandler = (error, req, res, next) => {
     console.error(error.message)
     if (error.name === 'CastError') {
         return res.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return res.status(400).send({ error: error.message })
     }
     next(error)
 }

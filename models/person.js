@@ -16,7 +16,10 @@ mongoose.connect(url)
 
 // Schema
 const personSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    minLength: 3
+  },
   number: String,
 })
 
@@ -55,7 +58,7 @@ const addNewPerson = (doc) => {
 //   })
 // }
 
-module.exports = {People, addNewPerson}
+module.exports = {People} 
 
 
 
