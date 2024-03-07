@@ -7,8 +7,8 @@ const url = process.env.MONGODB_URI
 console.log(`Connecting to url: ${url}`)
 
 mongoose.connect(url)
-  .then(result => {
-    console.log("connected to MongoDB")
+  .then(() => {
+    console.log('connected to MongoDB')
   })
   .catch((error) => {
     console.log(`error connecting to MongoDB: ${error.message}`)
@@ -25,11 +25,11 @@ const personSchema = new mongoose.Schema({
     minLength: 3
   },
   number: {
-   type: String,
-   minLength: 8,
-   validate: {
-    validator, 
-    message: 'Make sure the number is in format: 12-12345678 or 123-1234567'
+    type: String,
+    minLength: 8,
+    validate: {
+      validator,
+      message: 'Make sure the number is in format: 12-12345678 or 123-1234567'
     }
   }
 })
@@ -44,10 +44,10 @@ personSchema.set('toJSON', {
 
 const People = mongoose.model('Person', personSchema)
 
-const addNewPerson = (doc) => {
-  const newPerson = new People(doc)
-  newPerson.save().then(result => console.log(`added ${result}`))
-}
+// const addNewPerson = (doc) => {
+//   const newPerson = new People(doc)
+//   newPerson.save().then(result => console.log(`added ${result}`))
+// }
 
 //   const person = new Person({
 //     name: `${name}`,
@@ -69,7 +69,7 @@ const addNewPerson = (doc) => {
 //   })
 // }
 
-module.exports = {People} 
+module.exports = { People }
 
 
 
